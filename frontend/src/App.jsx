@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 
 function App() {
   const [searchTerm, setSearchTerm] = useState("");
+  const [showAbout, setShowAbout] = useState(false);
 
   // Temporary placeholder for products.
   // Later, when your backend is connected, replace this with fetched data.
@@ -25,6 +26,10 @@ function App() {
 
   return (
     <div className="app-container">
+      <button className="about-btn" onClick={() => setShowAbout(true)}>
+        About
+      </button>
+
       <header className="app-header">
         <img src={logo} alt="Logo" className="logo" />
 
@@ -123,7 +128,40 @@ function App() {
         </section>
       </div>
 
-      <p className="page-footer-note">GROUP 5</p>
+      {showAbout && (
+        <div className="about-modal-overlay" onClick={() => setShowAbout(false)}>
+          <div
+            className="about-modal"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="about-modal-header">
+              <h2>About This System</h2>
+              <button
+                className="close-btn"
+                onClick={() => setShowAbout(false)}
+              >
+                ×
+              </button>
+            </div>
+
+            <div className="about-modal-body">
+              <p>
+                <strong>Inventory Dashboard System</strong> is a simple sales and
+                inventory monitoring platform developed by <strong>Group 5</strong>.
+              </p>
+              <p>
+                This system helps users record sales, monitor product stock,
+                search inventory items, and manage product information more
+                efficiently.
+              </p>
+              <p>
+                Its goal is to provide a clean and user-friendly interface for
+                tracking inventory transactions and improving stock management.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
