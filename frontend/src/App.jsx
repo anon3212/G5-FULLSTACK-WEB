@@ -28,6 +28,7 @@ function App() {
     setSaleData({ ...saleData, [e.target.name]: e.target.value });
   };
 
+  // --- UPDATED handleSaleSubmit ---
   const handleSaleSubmit = async (e) => {
     e.preventDefault(); 
     try {
@@ -35,6 +36,7 @@ function App() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          // Ensure keys match your Django Serializer fields
           product: parseInt(saleData.product_id),
           quantity: parseInt(saleData.quantity),
           total_price: parseFloat(saleData.total_price)
@@ -43,14 +45,20 @@ function App() {
 
       if (response.ok) {
         alert("Sale recorded successfully!");
+        // 1. Clear the form so you can record a new sale
         setSaleData({ product_id: "", quantity: "", total_price: "" }); 
+        
+        // 2. CRITICAL: This re-fetches the products from Django 
+        // to show the updated (decreased) stock numbers in your table.
         fetchInventory(); 
       } else {
         const err = await response.json();
+        // If your Django model raises a ValidationError (e.g., out of stock), it shows here
         alert("Error: " + JSON.stringify(err));
       }
     } catch (error) {
       console.error("Submit error:", error);
+      alert("Failed to connect to the server.");
     }
   };
 
@@ -162,7 +170,7 @@ function App() {
                       <tr key={product.id}>
                         <td>{product.id}</td>
                         <td>{product.name}</td>
-                        <td>{product.category}</td>
+                        <td>{product.category_name || product.category}</td>
                         <td>₱{product.price}</td>
                         <td>{product.stock}</td>
                       </tr>

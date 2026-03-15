@@ -24,3 +24,16 @@ class Sale(models.Model):
     quantity = models.IntegerField()
     total_price = models.DecimalField(max_digits=10, decimal_places=2)
     date_sold = models.DateTimeField(auto_now_add=True)
+
+    def save(self, *args, **kwargs):
+        # 1. Get the product instance
+        product = self.product
+        
+        # 2. Subtract the quantity from the stock
+        product.stock = product.stock - self.quantity
+        
+        # 3. Save the product with the new stock count
+        product.save()
+        
+        # 4. Save the sale itself
+        super().save(*args, **kwargs)
